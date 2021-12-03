@@ -175,9 +175,12 @@ def warping(src_fea, src_proj, ref_proj, depth_values):
 
         proj_xyz = rot_xyz + trans.view(B, 1, 3, 1)
         grid = proj_xyz[:, :, :2, :] / proj_xyz[:, :, 2:3, :]  # get to 2D by dividing by z coordinate
-
-        grid = torch.stack((grid[:,:,0,:], grid[:,:,1,:]), dim=3)  # stack x and y grid
-
+        x_normalized = grid[:,:,0,:] / ((W-1)/2) - 1
+        y_normalized = grid[:, :, 1, :] / ((H - 1) / 2) - 1
+        print(x_normalized.shape)
+        print(y_normalized.shape)
+        grid = torch.stack((x_normalized, y_normalized), dim=3)  # stack x and y grid
+        print(grid.shape)
 
 
     # get warped_src_fea with bilinear interpolation (use 'grid_sample' function from pytorch)
